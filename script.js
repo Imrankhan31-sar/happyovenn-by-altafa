@@ -4,7 +4,8 @@ const BAKERY = {
   phone: "+919307290527", // International format
   instagramUrl: "https://www.instagram.com/the_happy_ovenn?stkn=MWx0ZHMzbXpyY3Fx",
   instagramHandle: "@the_happy_ovenn",
-  pickupInfo: "Pickup and delivery details are confirmed when you enquire.",
+  pickupInfo: "Pickup is available near Tauheed Mall, Shrungartali.",
+  deliveryInfo: "Pickup is available in Shrungartali. Home delivery is available on Saturdays within Shrungartali, Guhagar.",
 };
 
 const PRODUCTS = [
@@ -18,11 +19,11 @@ const PRODUCTS = [
 ];
 
 const FAQS = [
-  ["How far in advance should I place an order?", "Please share your preferred date when you enquire. We’ll confirm availability and the time needed for your chosen bake."],
-  ["Do you take customised cake orders?", "Share your occasion, design ideas, colours and preferred date in the order enquiry, and we can discuss what’s possible."],
-  ["Do you offer eggless options?", "Please mention any dietary needs in your enquiry so we can confirm what is available for your order."],
+  ["How far in advance should I place an order?", "Please place your order at least one day in advance."],
+  ["Do you take customised cake orders?", "We don’t make cream cakes, so we’re unable to take custom-designed cake orders."],
+  ["Do you offer eggless options?", "Yes, an eggless option is available. Please mention it when placing your order."],
   ["What are the available cake sizes?", "Sizes can vary by bake. Ask us about the available size for the product you have in mind."],
-  ["Do you offer delivery?", "Pickup or delivery can be discussed when you enquire. We’ll confirm the available arrangements for your order."],
+  ["Do you offer delivery?", BAKERY.deliveryInfo],
   ["Where can I collect my order?", BAKERY.pickupInfo],
   ["How should I store the cakes and brownies?", "Storage can depend on the bake. We’ll share care and serving guidance when we confirm your order."],
   ["Can I customise the packaging?", "Let us know what you have in mind. We can discuss packaging options when confirming your order."],
@@ -35,13 +36,18 @@ const whatsappOrderLink = (productName) => `https://wa.me/${BAKERY.whatsapp}?tex
 const productCard = (item, menuItem = false) => `
   <article class="product-card reveal${menuItem ? " menu-item" : ""}" ${menuItem ? `data-category="${item.category}"` : ""}>
     <div class="product-image-wrap"><img class="${item.crop || ""}" ${imageAttrs(item, 760)} alt="${item.alt}" loading="lazy" /><span class="product-badge">${item.label}</span></div>
-    <div class="product-info"><h3 class="product-name">${item.name}</h3><p class="product-description">${item.description}</p><div class="product-meta"><span>${item.size}</span><a class="product-order" href="${whatsappOrderLink(item.name)}" target="_blank" rel="noopener noreferrer">Ask price in ₹ <span aria-hidden="true">↗</span></a></div></div>
+    <div class="product-info"><h3 class="product-name">${item.name}</h3><p class="product-description">${item.description}</p><div class="product-meta"><span>${item.size}</span></div></div>
   </article>`;
 
 document.querySelector("#featured-products").innerHTML = PRODUCTS.map((item) => productCard(item)).join("");
 document.querySelector("#menu-list").innerHTML = PRODUCTS.map((item) => productCard(item, true)).join("");
 
 document.querySelector("#insta-grid").innerHTML = [PRODUCTS[2], PRODUCTS[3], PRODUCTS[4], PRODUCTS[5]].map((item) => `<img ${imageAttrs(item, 550)} alt="${item.alt}" loading="lazy" />`).join("");
+
+document.querySelector("#customer-feedback").innerHTML = Array.from({ length: 14 }, (_, index) => {
+  const number = String(index + 1).padStart(2, "0");
+  return `<figure class="feedback-card"><img src="assets/customer-feedback-${number}.jpeg" alt="Customer feedback screenshot ${number}" loading="lazy" /></figure>`;
+}).join("");
 
 document.querySelector("#faq-list").innerHTML = FAQS.map(([question, answer], index) => `<article class="faq-item"><button class="faq-question" aria-expanded="${index === 0}" aria-controls="faq-answer-${index}" id="faq-question-${index}">${question}<span aria-hidden="true">+</span></button><div class="faq-answer" id="faq-answer-${index}" role="region" aria-labelledby="faq-question-${index}" ${index === 0 ? "" : "hidden"}>${answer}</div></article>`).join("");
 
@@ -88,6 +94,32 @@ document.querySelectorAll('[data-contact="instagram"]').forEach((link) => {
   link.href = BAKERY.instagramUrl; link.target = "_blank"; link.rel = "noopener noreferrer";
 });
 document.querySelectorAll("[data-instagram-handle]").forEach((node) => { node.textContent = BAKERY.instagramHandle; });
+
+const orderForm = document.querySelector("#order-form");
+const orderDate = orderForm.querySelector('[name="date"]');
+const localToday = new Date();
+localToday.setDate(localToday.getDate() + 1);
+orderDate.min = `${localToday.getFullYear()}-${String(localToday.getMonth() + 1).padStart(2, "0")}-${String(localToday.getDate()).padStart(2, "0")}`;
+const orderName = orderForm.querySelector('[name="name"]');
+orderName.addEventListener("input", (event) => {
+  const input = event.currentTarget;
+  input.value = Array.from(input.value.replace(/[^\p{L}\s]/gu, "")).slice(0, 15).join("");
+  input.setCustomValidity(input.value.trim() ? "" : "Please enter your name using letters only.");
+});
+orderForm.addEventListener("submit", (event) => {
+  event.preventDefault();
+  if (!orderForm.reportValidity()) return;
+  const values = new FormData(orderForm);
+  const orderMessage = [
+    "Hi The Happy Oven! I’d like to place an order.",
+    `Name: ${values.get("name")}`,
+    `Cake: ${values.get("cake")}`,
+    `Size: ${values.get("size")}`,
+    `Quantity: ${values.get("quantity")}`,
+    `Needed on: ${values.get("date")}`,
+  ].join("\n");
+  window.location.assign(`https://wa.me/${BAKERY.whatsapp}?text=${encodeURIComponent(orderMessage)}`);
+});
 if ("IntersectionObserver" in window && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
   const observer = new IntersectionObserver((entries, instance) => entries.forEach((entry) => {
     if (entry.isIntersecting) { entry.target.classList.add("visible"); instance.unobserve(entry.target); }

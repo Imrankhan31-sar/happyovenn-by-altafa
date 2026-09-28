@@ -84,3 +84,47 @@
 .round-cake-crop{transform:scale(1.8);transform-origin:78% 80%}
 .product-card:hover .product-image-wrap img.round-cake-crop{transform:scale(1.86)}
 @media(max-width:760px){.brand-logo{width:62px;height:62px}.footer-logo{width:92px;height:92px}.story{padding-top:68px;padding-bottom:68px}}
+
+/* Keep every mobile menu filter fully visible and easy to swipe through. */
+.category-tab{flex:0 0 auto;white-space:nowrap}
+.category-nav::-webkit-scrollbar{display:none}
+.product-meta{justify-content:flex-start}
+
+/* Customer feedback stories stay uncropped and scroll horizontally on small screens. */
+.feedback-track{
+  display:grid;
+  grid-auto-flow:column;
+  grid-auto-columns:calc(25% - 13.5px);
+  gap:18px;
+  overflow-x:auto;
+  padding:4px 2px 18px;
+  scroll-snap-type:x mandatory;
+  overscroll-behavior-inline:contain;
+  scrollbar-color:#bca99a #eee5dc;
+}
+.feedback-card{
+  min-width:0;
+  margin:0;
+  overflow:hidden;
+  border:1px solid #e4d9cf;
+  border-radius:4px;
+  background:#fffdf9;
+  box-shadow:0 10px 28px #523b320d;
+  scroll-snap-align:start;
+}
+.feedback-card img{display:block;width:100%;aspect-ratio:9/20;object-fit:contain;background:#f0ebe4}
+.delivery-note{font-size:11px!important;letter-spacing:.025em}
+.order-form label small{font-size:9px;font-weight:400;letter-spacing:0;text-transform:none;color:#9a8b7f}
+.order-form select{appearance:none;-webkit-appearance:none}
+.order-form input[type="date"]{min-height:40px}
+.order-section{display:grid;grid-template-columns:.8fr 1.2fr;gap:9vw;align-items:center}
+.order-aside{max-width:none;margin:0;padding:0;text-align:left}
+.order-aside>p:not(.eyebrow){max-width:none;margin:20px 0}
+.contact-links{max-width:none;grid-template-columns:1fr;margin:28px 0 0}
+@media(max-width:980px){.feedback-track{grid-auto-columns:calc(33.333% - 12px)}}
+@media(max-width:760px){
+  .category-nav{justify-content:flex-start;overflow-x:auto;overflow-y:hidden;margin:25px -22px 25px;padding:10px 22px;scrollbar-width:none;-webkit-overflow-scrolling:touch;scroll-padding-inline:22px}
+  .feedback-track{grid-auto-columns:calc(50% - 9px);gap:18px}
+  .order-section{grid-template-columns:1fr;align-items:stretch}
+}
+@media(max-width:480px){.feedback-track{grid-auto-columns:82%;gap:12px}}
