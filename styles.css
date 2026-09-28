@@ -128,3 +128,23 @@
   .order-section{grid-template-columns:1fr;align-items:stretch}
 }
 @media(max-width:480px){.feedback-track{grid-auto-columns:82%;gap:12px}}
+
+/* Run the delivery note continuously through the top announcement bar. */
+.announcement{display:block;position:relative;overflow:hidden;white-space:nowrap}
+.announcement-track{display:flex;align-items:center;width:max-content;height:100%;animation:announcement-marquee 36s linear infinite;will-change:transform}
+.announcement-item{display:inline-flex;align-items:center;gap:22px;padding:0 24px;white-space:nowrap;color:inherit;font-size:inherit;letter-spacing:inherit;text-transform:inherit}
+@keyframes announcement-marquee{to{transform:translateX(-50%)}}
+
+@media(max-width:760px){
+  .order-aside{display:contents}
+  .order-form{order:1}
+  .contact-links{order:2}
+  .footer-note p br{display:block}
+}
+@media(prefers-reduced-motion:reduce){
+  .announcement{height:auto;min-height:32px;white-space:normal}
+  .announcement-track{width:100%;height:auto;min-height:32px;justify-content:center;animation:none;transform:none}
+  .announcement-item:not(:first-child){display:none}
+  .announcement-item:first-child{justify-content:center;white-space:normal;text-align:center;padding:3px 12px}
+}
+@media(max-width:760px) and (prefers-reduced-motion:reduce){.announcement{min-height:28px}.announcement-track{min-height:28px}}
