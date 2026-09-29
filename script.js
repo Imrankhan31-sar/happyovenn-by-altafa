@@ -9,13 +9,13 @@ const BAKERY = {
 };
 
 const PRODUCTS = [
-  { name: "Kesar Mawa Cake", category: "dry-cakes", label: "Dry cake", description: "A much-loved homemade cake for sharing and celebrating.", size: "Ask for available size", image: "assets/custom-cake.png", alt: "Birthday cake decorated with piped cream, chocolate, fruit and a custom topper" },
-  { name: "Aata Jaggery Cake", category: "dry-cakes", label: "Dry cake", description: "A comforting homemade favourite, baked fresh to order.", size: "Ask for available size", image: "assets/aata-jaggery-cake-source.png", crop: "round-cake-crop", alt: "Round Aata Jaggery cake topped with seeds" },
-  { name: "Chocolate Banana", category: "dry-cakes", label: "Dry cake", description: "A rich, tender bake for everyday cravings and little celebrations.", size: "Ask for available size", image: "assets/salted-caramel-chocolate-cake-bowl.jpg", alt: "Two chocolate bakes wrapped with ribbons and Happy Oven thank-you labels" },
-  { name: "Fudgy Nutella Brownie Slab / Cake", category: "brownies", label: "Brownie", description: "A generously fudgy chocolate bake, made for sharing.", size: "Slab or cake — enquire", image: "assets/chocolate-banana-cake.png", alt: "Chocolate birthday cake with chocolate decorations" },
-  { name: "Nutella Bento Brownie", category: "brownies", label: "Brownie", description: "A little box of brownie goodness for gifting or keeping.", size: "Ask for available size", image: "assets/fudgy-nutella-brownie.png", alt: "Chocolate brownie with chocolate drizzle served in a white tray" },
-  { name: "Salted Caramel & Chocolate Cake Bowl", category: "other-treats", label: "Cake bowl", description: "A layered little treat for a moment of indulgence.", size: "Ask for available size", image: "assets/nutella-bento-brownie.jpeg", alt: "Chocolate cake bowl in a branded cup topped with chocolate drizzle and chips" },
-  { name: "Scoopable Cookie Tin", category: "other-treats", label: "Cookie tin", description: "A scoopable treat, perfect for sharing or gifting.", size: "Ask for available size", image: "photo-1558961363-fa8fdf82db35", alt: "Freshly baked cookies ready to share" },
+  { name: "Kesar Mawa Cake", category: "dry-cakes", label: "Dry cake", description: "Made with real mawa and fragrant kesar for a rich, gently aromatic cake.", size: "Ask for available size", image: "assets/custom-cake.png", alt: "Round celebration cake decorated with nuts, flowers and a Happy Birthday topper" },
+  { name: "Aata Jaggery Cake", category: "dry-cakes", label: "Dry cake", description: "Baked with jaggery, whole wheat flour and desi ghee for a wholesome, comforting bite.", size: "Ask for available size", image: "assets/aata-jaggery-cake-new.jpg", alt: "Round jaggery cake topped with seeds, wrapped with a ribbon and thank-you label" },
+  { name: "Chocolate Banana", category: "dry-cakes", label: "Dry cake", description: "Made with banana, brown butter and generous chunks of dark chocolate.", size: "Ask for available size", image: "assets/salted-caramel-chocolate-cake-bowl.jpg", alt: "Chocolate bakes wrapped with ribbons and Happy Oven thank-you labels" },
+  { name: "Fudgy Nutella Brownie Slab / Cake", category: "brownies", label: "Brownie", description: "Deeply chocolatey and fudgy, finished with a generous Nutella swirl.", size: "Slab or cake — enquire", image: "assets/chocolate-banana-cake.png", alt: "Chocolate celebration cake with chocolate decorations" },
+  { name: "Nutella Bento Brownie", category: "brownies", label: "Brownie", description: "A rich, fudgy brownie with Nutella in a little box made for sharing.", size: "Ask for available size", image: "assets/fudgy-nutella-brownie.png", alt: "Chocolate brownie with chocolate drizzle served in a white tray" },
+  { name: "Salted Caramel & Chocolate Cake Bowl", category: "other-treats", label: "Cake bowl", description: "Spoon through rich chocolate and smooth salted caramel in a little bowl of indulgence.", size: "Ask for available size", image: "assets/salted-caramel-chocolate-cake-bowl-new.jpg", alt: "Chocolate cake bowl drizzled with chocolate, beside its Happy Oven lid and pink flowers" },
+  { name: "Scoopable Cookie Tin", category: "other-treats", label: "Cookie tin", description: "Soft-baked cookie goodness, ready to scoop and share straight from the tin.", size: "Ask for available size", image: "photo-1558961363-fa8fdf82db35", alt: "Freshly baked cookies ready to share", menuOnly: true },
 ];
 
 const FAQS = [
@@ -39,7 +39,7 @@ const productCard = (item, menuItem = false) => `
     <div class="product-info"><h3 class="product-name">${item.name}</h3><p class="product-description">${item.description}</p><div class="product-meta"><span>${item.size}</span></div></div>
   </article>`;
 
-document.querySelector("#featured-products").innerHTML = PRODUCTS.map((item) => productCard(item)).join("");
+document.querySelector("#featured-products").innerHTML = PRODUCTS.filter((item) => !item.menuOnly).map((item) => productCard(item)).join("");
 document.querySelector("#menu-list").innerHTML = PRODUCTS.map((item) => productCard(item, true)).join("");
 
 document.querySelector("#insta-grid").innerHTML = [PRODUCTS[2], PRODUCTS[3], PRODUCTS[4], PRODUCTS[5]].map((item) => `<img ${imageAttrs(item, 550)} alt="${item.alt}" loading="lazy" />`).join("");
