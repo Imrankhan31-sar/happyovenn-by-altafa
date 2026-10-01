@@ -105,8 +105,12 @@ orderCakeOptions.innerHTML = PRODUCTS.map((product, index) => `
       <span>${product.name}</span>
     </label>
     <div class="order-cake-details" hidden>
-      <label for="order-cake-size-${index}">Size / format <small>(optional)</small>
-        <input id="order-cake-size-${index}" name="cake-size" type="text" maxlength="40" placeholder="e.g. 500 g or slab" disabled />
+      <label for="order-cake-size-${index}">Size
+        <select id="order-cake-size-${index}" name="cake-size" disabled>
+          <option value="250 g" selected>250 g</option>
+          <option value="500 g">500 g</option>
+          <option value="1 kg">1 kg</option>
+        </select>
       </label>
       <label for="order-cake-quantity-${index}">Quantity
         <input id="order-cake-quantity-${index}" name="cake-quantity" type="number" min="1" max="99" step="1" value="1" required disabled />
@@ -141,7 +145,7 @@ orderForm.addEventListener("submit", (event) => {
     const details = checkbox.closest(".order-cake-item");
     const size = details.querySelector('[name="cake-size"]').value.trim();
     const quantity = details.querySelector('[name="cake-quantity"]').value;
-    return `- ${checkbox.value} | Quantity: ${quantity}${size ? ` | Size / format: ${size}` : ""}`;
+    return `- ${checkbox.value} | Size: ${size} | Quantity: ${quantity}`;
   });
   const orderMessage = [
     "Hi The Happy Oven! I’d like to place an order.",
