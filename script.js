@@ -13,8 +13,8 @@ const PRODUCTS = [
   { name: "Aata Jaggery Cake", category: "dry-cakes", label: "Dry cake", description: "Baked with jaggery, whole wheat flour and desi ghee for a wholesome, comforting bite.", size: "Ask for available size", image: "assets/aata-jaggery-cake-new.jpg", alt: "Round jaggery cake topped with seeds, wrapped with a ribbon and thank-you label" },
   { name: "Chocolate Banana", category: "dry-cakes", label: "Dry cake", description: "Made with banana, brown butter and generous chunks of dark chocolate.", size: "Ask for available size", image: "assets/salted-caramel-chocolate-cake-bowl.jpg", alt: "Chocolate bakes wrapped with ribbons and Happy Oven thank-you labels" },
   { name: "Fudgy Nutella Brownie Slab / Cake", category: "brownies", label: "Brownie", description: "Deeply chocolatey and fudgy, finished with a generous Nutella swirl.", size: "Slab or cake — enquire", image: "assets/chocolate-banana-cake.png", alt: "Chocolate celebration cake with chocolate decorations" },
-  { name: "Nutella Bento Brownie", category: "brownies", label: "Brownie", description: "A rich, fudgy brownie with Nutella in a little box made for sharing.", size: "Ask for available size", image: "assets/fudgy-nutella-brownie.png", alt: "Chocolate brownie with chocolate drizzle served in a white tray" },
-  { name: "Salted Caramel & Chocolate Cake Bowl", category: "other-treats", label: "Cake bowl", description: "Spoon through rich chocolate and smooth salted caramel in a little bowl of indulgence.", size: "Ask for available size", image: "assets/salted-caramel-chocolate-cake-bowl-new.jpg", alt: "Chocolate cake bowl drizzled with chocolate, beside its Happy Oven lid and pink flowers" },
+  { name: "Nutella Bento Brownie", category: "brownies", label: "Brownie", description: "A rich, fudgy brownie with Nutella in a little box made for sharing.", size: "Ask for available size", fixedSize: "250 g", image: "assets/fudgy-nutella-brownie.png", alt: "Chocolate brownie with chocolate drizzle served in a white tray" },
+  { name: "Salted Caramel & Chocolate Cake Bowl", category: "other-treats", label: "Cake bowl", description: "Spoon through rich chocolate and smooth salted caramel in a little bowl of indulgence.", size: "Ask for available size", fixedSize: "250 g", image: "assets/salted-caramel-chocolate-cake-bowl-new.jpg", alt: "Chocolate cake bowl drizzled with chocolate, beside its Happy Oven lid and pink flowers" },
   { name: "Scoopable Cookie Tin", category: "other-treats", label: "Cookie tin", description: "Soft-baked cookie goodness, ready to scoop and share straight from the tin.", size: "Ask for available size", image: "photo-1558961363-fa8fdf82db35", alt: "Freshly baked cookies ready to share", menuOnly: true },
 ];
 
@@ -101,17 +101,19 @@ const orderCakeOptions = orderForm.querySelector("#order-cake-options");
 orderCakeOptions.innerHTML = PRODUCTS.map((product, index) => `
   <div class="order-cake-item">
     <label class="order-cake-choice" for="order-cake-${index}">
-      <input class="order-cake-check" id="order-cake-${index}" type="checkbox" value="${product.name}" />
+      <input class="order-cake-check" id="order-cake-${index}" type="checkbox" value="${product.name}" data-fixed-size="${product.fixedSize || ""}" />
       <span>${product.name}</span>
     </label>
     <div class="order-cake-details" hidden>
-      <label for="order-cake-size-${index}">Size
-        <select id="order-cake-size-${index}" name="cake-size" disabled>
-          <option value="250 g" selected>250 g</option>
-          <option value="500 g">500 g</option>
-          <option value="1 kg">1 kg</option>
-        </select>
-      </label>
+      ${product.fixedSize
+        ? `<div class="order-cake-fixed-size"><span>Size</span><strong>${product.fixedSize}</strong></div>`
+        : `<label for="order-cake-size-${index}">Size
+          <select id="order-cake-size-${index}" name="cake-size" disabled>
+            <option value="250 g" selected>250 g</option>
+            <option value="500 g">500 g</option>
+            <option value="1 kg">1 kg</option>
+          </select>
+        </label>`}
       <label for="order-cake-quantity-${index}">Quantity
         <input id="order-cake-quantity-${index}" name="cake-quantity" type="number" min="1" max="99" step="1" value="1" required disabled />
       </label>
@@ -124,7 +126,7 @@ const updateCakeSelectionValidity = () => {
 cakeChecks.forEach((checkbox) => checkbox.addEventListener("change", () => {
   const details = checkbox.closest(".order-cake-item").querySelector(".order-cake-details");
   details.hidden = !checkbox.checked;
-  details.querySelectorAll("input").forEach((input) => { input.disabled = !checkbox.checked; });
+  details.querySelectorAll("input, select").forEach((control) => { control.disabled = !checkbox.checked; });
   updateCakeSelectionValidity();
 }));
 updateCakeSelectionValidity();
@@ -143,7 +145,7 @@ orderForm.addEventListener("submit", (event) => {
   const values = new FormData(orderForm);
   const selectedCakes = cakeChecks.filter((checkbox) => checkbox.checked).map((checkbox) => {
     const details = checkbox.closest(".order-cake-item");
-    const size = details.querySelector('[name="cake-size"]').value.trim();
+    const size = checkbox.dataset.fixedSize || details.querySelector('[name="cake-size"]').value.trim();
     const quantity = details.querySelector('[name="cake-quantity"]').value;
     return `- ${checkbox.value} | Size: ${size} | Quantity: ${quantity}`;
   });
