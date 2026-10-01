@@ -144,3 +144,17 @@
   .announcement-item:first-child{justify-content:center;white-space:normal;text-align:center;padding:3px 12px}
 }
 @media(max-width:760px) and (prefers-reduced-motion:reduce){.announcement{min-height:28px}.announcement-track{min-height:28px}}
+
+/* Multi-item order picker */
+.order-cake-picker{border-top:1px solid #e4dcd3!important;padding-top:15px!important}
+.order-cake-picker legend{margin-bottom:0!important;color:var(--choc)!important;font-size:10px!important;letter-spacing:.06em!important}
+.order-cake-help{margin:2px 0 8px;color:#887a6e;font-size:10px;line-height:1.55}
+.order-cake-item{padding:11px 0;border-bottom:1px solid #eee6df}
+.order-cake-choice{display:flex!important;align-items:center;gap:10px;cursor:pointer;text-transform:none!important;letter-spacing:0!important;font-size:12px!important}
+.order-cake-choice input[type="checkbox"]{appearance:auto;accent-color:#9b7464;width:16px;height:16px;flex:0 0 16px;margin:0;padding:0;border:0;cursor:pointer}
+.order-cake-choice span{font-size:12px;letter-spacing:0;font-weight:500}
+.order-cake-details{display:grid;grid-template-columns:minmax(0,1fr) 95px;align-items:end;gap:14px;padding:10px 0 0 26px}
+.order-cake-details[hidden]{display:none!important}
+.order-cake-details label{display:block;font-size:8px;letter-spacing:.06em}
+.order-cake-details input{margin-top:2px!important;padding:7px 0!important;font-size:11px!important;letter-spacing:0}
+@media(max-width:420px){.order-cake-details{grid-template-columns:minmax(0,1fr) 78px;gap:10px;padding-left:23px}}

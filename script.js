@@ -97,6 +97,33 @@ document.querySelectorAll("[data-instagram-handle]").forEach((node) => { node.te
 
 const orderForm = document.querySelector("#order-form");
 const orderDate = orderForm.querySelector('[name="date"]');
+const orderCakeOptions = orderForm.querySelector("#order-cake-options");
+orderCakeOptions.innerHTML = PRODUCTS.map((product, index) => `
+  <div class="order-cake-item">
+    <label class="order-cake-choice" for="order-cake-${index}">
+      <input class="order-cake-check" id="order-cake-${index}" type="checkbox" value="${product.name}" />
+      <span>${product.name}</span>
+    </label>
+    <div class="order-cake-details" hidden>
+      <label for="order-cake-size-${index}">Size / format <small>(optional)</small>
+        <input id="order-cake-size-${index}" name="cake-size" type="text" maxlength="40" placeholder="e.g. 500 g or slab" disabled />
+      </label>
+      <label for="order-cake-quantity-${index}">Quantity
+        <input id="order-cake-quantity-${index}" name="cake-quantity" type="number" min="1" max="99" step="1" value="1" required disabled />
+      </label>
+    </div>
+  </div>`).join("");
+const cakeChecks = Array.from(orderCakeOptions.querySelectorAll(".order-cake-check"));
+const updateCakeSelectionValidity = () => {
+  cakeChecks[0].setCustomValidity(cakeChecks.some((checkbox) => checkbox.checked) ? "" : "Please select at least one bake.");
+};
+cakeChecks.forEach((checkbox) => checkbox.addEventListener("change", () => {
+  const details = checkbox.closest(".order-cake-item").querySelector(".order-cake-details");
+  details.hidden = !checkbox.checked;
+  details.querySelectorAll("input").forEach((input) => { input.disabled = !checkbox.checked; });
+  updateCakeSelectionValidity();
+}));
+updateCakeSelectionValidity();
 const localToday = new Date();
 localToday.setDate(localToday.getDate() + 1);
 orderDate.min = `${localToday.getFullYear()}-${String(localToday.getMonth() + 1).padStart(2, "0")}-${String(localToday.getDate()).padStart(2, "0")}`;
@@ -110,12 +137,17 @@ orderForm.addEventListener("submit", (event) => {
   event.preventDefault();
   if (!orderForm.reportValidity()) return;
   const values = new FormData(orderForm);
+  const selectedCakes = cakeChecks.filter((checkbox) => checkbox.checked).map((checkbox) => {
+    const details = checkbox.closest(".order-cake-item");
+    const size = details.querySelector('[name="cake-size"]').value.trim();
+    const quantity = details.querySelector('[name="cake-quantity"]').value;
+    return `- ${checkbox.value} | Quantity: ${quantity}${size ? ` | Size / format: ${size}` : ""}`;
+  });
   const orderMessage = [
     "Hi The Happy Oven! I’d like to place an order.",
     `Name: ${values.get("name")}`,
-    `Cake: ${values.get("cake")}`,
-    `Size: ${values.get("size")}`,
-    `Quantity: ${values.get("quantity")}`,
+    "Selected items:",
+    ...selectedCakes,
     `Needed on: ${values.get("date")}`,
   ].join("\n");
   window.location.assign(`https://wa.me/${BAKERY.whatsapp}?text=${encodeURIComponent(orderMessage)}`);
