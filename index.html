@@ -3,6 +3,13 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script>
+      if (window.matchMedia("(max-width: 760px)").matches) {
+        if ("scrollRestoration" in history) history.scrollRestoration = "manual";
+        if (location.hash) history.replaceState(history.state, "", `${location.pathname}${location.search}`);
+        window.addEventListener("pageshow", () => window.scrollTo(0, 0), { once: true });
+      }
+    </script>
     <meta name="theme-color" content="#f7f3ec" />
     <meta name="description" content="Homemade cakes, brownies and sweet treats, freshly baked with love by The Happy Oven by Altafa." />
     <meta property="og:title" content="The Happy Oven by Altafa — Baked Fresh. Made with Love." />
@@ -93,7 +100,7 @@
 </form><div class="contact-links"><a href="#" data-contact="whatsapp">WhatsApp us <span>↗</span></a><a href="#" data-contact="phone">Call us <span>↗</span></a><a href="#" data-contact="instagram">Instagram <span>↗</span></a></div></section>
     </main>
     <footer class="footer"><div class="footer-main"><div class="footer-brand"><a class="brand" href="#top" aria-label="The Happy Oven home"><img class="brand-logo footer-logo" src="assets/happy-oven-logo.png" alt="The Happy Oven by Altafa" /></a><p>Homemade with love, for life's sweetest moments.</p></div><div><h3>Take a little look</h3><a href="#story">Our story</a><a href="#menu">Menu</a><a href="#custom">Custom cakes</a><a href="#gallery">Gallery</a></div><div><h3>Here for you</h3><a href="#faq">FAQs</a><a href="#order">Contact</a><a href="#" data-contact="whatsapp">WhatsApp</a><a href="#" data-contact="phone">Call us</a><a href="#" data-contact="instagram">Instagram</a></div><div class="footer-note"><span>✿</span><p>Good things are<br />made with love.</p></div></div><div class="footer-bottom"><span>© 2026 The Happy Oven by Altafa. All rights reserved.</span><a href="#top">Back to top ↑</a><span>Made at home, with heart ♡</span></div></footer>
-    <a class="mobile-order" href="#order">Order now <span>↗</span></a>
+    <a class="mobile-order" href="#order"><span class="mobile-order-label">Order now</span><span aria-hidden="true">↗</span></a>
     <dialog class="lightbox" id="lightbox" aria-label="Image preview"><button class="lightbox-close" aria-label="Close image preview">×</button><img src="" alt="" /></dialog>
     <script src="script.js"></script>
   </body>

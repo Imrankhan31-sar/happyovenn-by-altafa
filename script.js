@@ -120,10 +120,16 @@ orderCakeOptions.innerHTML = PRODUCTS.map((product, index) => `
     </div>
   </div>`).join("");
 const cakeChecks = Array.from(orderCakeOptions.querySelectorAll(".order-cake-check"));
+const mobileOrderCta = document.querySelector(".mobile-order");
+const mobileOrderLabel = mobileOrderCta.querySelector(".mobile-order-label");
 const updateCakeSelectionValidity = () => {
   cakeChecks[0].setCustomValidity(cakeChecks.some((checkbox) => checkbox.checked) ? "" : "Please select at least one bake.");
 };
 const updateMenuCartControls = () => {
+  const hasItems = cakeChecks.some((checkbox) => checkbox.checked);
+  mobileOrderLabel.textContent = hasItems ? "View cart" : "Order now";
+  mobileOrderCta.classList.toggle("has-cart", hasItems);
+  mobileOrderCta.setAttribute("aria-label", hasItems ? "View cart" : "Order now");
   document.querySelectorAll("[data-menu-cart-control]").forEach((control) => {
     const index = Number(control.dataset.menuCartControl);
     const checkbox = cakeChecks[index];
