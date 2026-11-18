@@ -33,14 +33,14 @@ const FAQS = [
 const imageUrl = (source, width = 720) => source.startsWith("assets/") ? source : `https://images.unsplash.com/${source}?auto=format&fit=crop&w=${width}&q=82`;
 const imageAttrs = (item, width = 720) => `src="${imageUrl(item.image, width)}" ${item.fallback ? `data-fallback="${item.fallback}"` : ""}`;
 const whatsappOrderLink = (productName) => `https://wa.me/${BAKERY.whatsapp}?text=${encodeURIComponent(`Hi The Happy Oven! I'd like to ask about ${productName}.`)}`;
-const productCard = (item, menuItem = false) => `
-  <article class="product-card reveal${menuItem ? " menu-item" : ""}" ${menuItem ? `data-category="${item.category}"` : ""}>
+const productCard = (item, menuItem = false, productIndex = -1) => `
+  <article class="product-card reveal${menuItem ? " menu-item" : ""}" ${menuItem ? `data-category="${item.category}" data-product-index="${productIndex}"` : ""}>
     <div class="product-image-wrap"><img class="${item.crop || ""}" ${imageAttrs(item, 760)} alt="${item.alt}" loading="lazy" /><span class="product-badge">${item.label}</span></div>
-    <div class="product-info"><h3 class="product-name">${item.name}</h3><p class="product-description">${item.description}</p><div class="product-meta"><span>${item.size}</span></div></div>
+    <div class="product-info"><h3 class="product-name">${item.name}</h3><p class="product-description">${item.description}</p><div class="product-meta"><span>${item.size}</span></div>${menuItem ? `<div class="menu-cart-control" data-menu-cart-control="${productIndex}"><button class="button button-small menu-add-button" type="button" data-cart-add="${productIndex}">Add to cart <span aria-hidden="true">＋</span></button><div class="menu-quantity-control" hidden><button class="quantity-button" type="button" data-cart-decrement="${productIndex}" aria-label="Remove one ${item.name}">−</button><span class="quantity-value" data-cart-quantity="${productIndex}" aria-live="polite">0</span><button class="quantity-button" type="button" data-cart-increment="${productIndex}" aria-label="Add one ${item.name}">＋</button></div></div>` : ""}</div>
   </article>`;
 
 document.querySelector("#featured-products").innerHTML = PRODUCTS.filter((item) => !item.menuOnly).map((item) => productCard(item)).join("");
-document.querySelector("#menu-list").innerHTML = PRODUCTS.map((item) => productCard(item, true)).join("");
+document.querySelector("#menu-list").innerHTML = PRODUCTS.map((item, index) => productCard(item, true, index)).join("");
 
 document.querySelector("#insta-grid").innerHTML = [PRODUCTS[2], PRODUCTS[3], PRODUCTS[4], PRODUCTS[5]].map((item) => `<img ${imageAttrs(item, 550)} alt="${item.alt}" loading="lazy" />`).join("");
 
@@ -123,13 +123,55 @@ const cakeChecks = Array.from(orderCakeOptions.querySelectorAll(".order-cake-che
 const updateCakeSelectionValidity = () => {
   cakeChecks[0].setCustomValidity(cakeChecks.some((checkbox) => checkbox.checked) ? "" : "Please select at least one bake.");
 };
+const updateMenuCartControls = () => {
+  document.querySelectorAll("[data-menu-cart-control]").forEach((control) => {
+    const index = Number(control.dataset.menuCartControl);
+    const checkbox = cakeChecks[index];
+    const quantityInput = checkbox.closest(".order-cake-item").querySelector('[name="cake-quantity"]');
+    control.querySelector(".menu-add-button").hidden = checkbox.checked;
+    control.querySelector(".menu-quantity-control").hidden = !checkbox.checked;
+    control.querySelector("[data-cart-quantity]").textContent = checkbox.checked ? quantityInput.value : "0";
+  });
+};
 cakeChecks.forEach((checkbox) => checkbox.addEventListener("change", () => {
   const details = checkbox.closest(".order-cake-item").querySelector(".order-cake-details");
   details.hidden = !checkbox.checked;
   details.querySelectorAll("input, select").forEach((control) => { control.disabled = !checkbox.checked; });
   updateCakeSelectionValidity();
+  updateMenuCartControls();
 }));
+document.querySelector("#menu-list").addEventListener("click", (event) => {
+  const addButton = event.target.closest("[data-cart-add]");
+  const incrementButton = event.target.closest("[data-cart-increment]");
+  const decrementButton = event.target.closest("[data-cart-decrement]");
+  const clickedButton = addButton || incrementButton || decrementButton;
+  if (!clickedButton) return;
+  const index = Number(clickedButton.dataset.cartAdd ?? clickedButton.dataset.cartIncrement ?? clickedButton.dataset.cartDecrement);
+  const checkbox = cakeChecks[index];
+  const quantityInput = checkbox.closest(".order-cake-item").querySelector('[name="cake-quantity"]');
+  if (addButton) {
+    quantityInput.value = "1";
+    checkbox.checked = true;
+    checkbox.dispatchEvent(new Event("change", { bubbles: true }));
+  } else if (incrementButton) {
+    quantityInput.value = String(Math.min(99, (Number(quantityInput.value) || 0) + 1));
+    updateMenuCartControls();
+  } else if (decrementButton) {
+    const nextQuantity = (Number(quantityInput.value) || 1) - 1;
+    if (nextQuantity <= 0) {
+      checkbox.checked = false;
+      checkbox.dispatchEvent(new Event("change", { bubbles: true }));
+    } else {
+      quantityInput.value = String(nextQuantity);
+      updateMenuCartControls();
+    }
+  }
+});
+orderCakeOptions.addEventListener("input", (event) => {
+  if (event.target.matches('[name="cake-quantity"]')) updateMenuCartControls();
+});
 updateCakeSelectionValidity();
+updateMenuCartControls();
 const localToday = new Date();
 localToday.setDate(localToday.getDate() + 1);
 orderDate.min = `${localToday.getFullYear()}-${String(localToday.getMonth() + 1).padStart(2, "0")}-${String(localToday.getDate()).padStart(2, "0")}`;

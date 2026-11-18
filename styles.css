@@ -145,6 +145,16 @@
 }
 @media(max-width:760px) and (prefers-reduced-motion:reduce){.announcement{min-height:28px}.announcement-track{min-height:28px}}
 
+/* Add-to-order controls on menu cards. */
+.menu-cart-control{display:flex;align-items:center;min-height:42px;margin-top:18px}
+.menu-cart-control [hidden]{display:none!important}
+.menu-add-button{min-height:40px;gap:10px;cursor:pointer}
+.menu-quantity-control{display:inline-flex;align-items:center;gap:13px}
+.quantity-button{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border:1px solid #cdbfb3;border-radius:50%;background:#fffdf9;color:#563f34;font-size:19px;line-height:1;cursor:pointer;transition:background .2s,color .2s,border-color .2s}
+.quantity-button:hover{background:#563f34;color:#fff;border-color:#563f34}
+.quantity-value{min-width:18px;text-align:center;font-size:13px;font-weight:600;color:#563f34}
+@media(max-width:760px){.menu-cart-control{margin-top:14px}.menu-add-button{padding:0 13px;font-size:10px}.menu-item .product-info{min-width:0}.menu-item .menu-cart-control{min-height:36px}}
+
 /* Multi-item order picker */
 .order-cake-picker{padding-top:0!important}
 .order-form>.order-cake-picker legend,.order-form>label{margin-bottom:14px;color:var(--choc)!important;font-size:10px!important;letter-spacing:.06em!important;font-weight:600;text-transform:uppercase}
