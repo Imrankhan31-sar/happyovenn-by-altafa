@@ -154,7 +154,7 @@
 .quantity-button:hover{background:#563f34;color:#fff;border-color:#563f34}
 .quantity-value{min-width:18px;text-align:center;font-size:13px;font-weight:600;color:#563f34}
 @media(max-width:760px){.menu-cart-control{margin-top:14px}.menu-add-button{padding:0 13px;font-size:10px}.menu-item .product-info{min-width:0}.menu-item .menu-cart-control{min-height:36px}}
-.mobile-order.has-cart{background:var(--cream);color:var(--choc);border-top:1px solid #d9cec4;box-shadow:0 -3px 14px #33241e14}
+.mobile-order.has-cart{background:#e8ded4;color:var(--choc);border-top:1px solid #d9cec4;box-shadow:0 -3px 14px #33241e14}
 .mobile-order.has-cart span{color:var(--choc)}
 
 /* Multi-item order picker */
